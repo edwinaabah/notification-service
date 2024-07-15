@@ -10,20 +10,15 @@ orders = {
 
 USER_SERVICE_URL = "http://user_service:5001/users"
 
-@app.route('/orders/<int:order_id>', methods=['GET'])
-def get_order(order_id):
-    order = orders.get(order_id)
-    if order:
+@app.route('/orders', methods=['GET'])
+def get_orders():
+    for order_id, order in orders.items():
         user_id = order["user_id"]
         user_response = requests.get(f"{USER_SERVICE_URL}/{user_id}")
         if user_response.status_code == 200:
             user = user_response.json()
             order["user"] = user
-            return jsonify(order), 200
-        else:
-            return jsonify({"error": "User not found"}), 404
-    else:
-        return jsonify({"error": "Order not found"}), 404
+    return jsonify(orders), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002)
