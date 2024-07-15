@@ -1,5 +1,4 @@
 from flask import Flask, jsonify
-import requests
 
 app = Flask(__name__)
 
@@ -9,23 +8,16 @@ orders = {
     2: {"user_id": 2, "product": "Smartphone", "amount": 800}
 }
 
-# URL of the user service
-USER_SERVICE_URL = "http://user_service:5001/users"
-
 @app.route('/orders', methods=['GET'])
 def get_orders():
     try:
         for order_id, order in orders.items():
             user_id = order["user_id"]
-            # Fetch user details from user service
-            user_response = requests.get(f"{USER_SERVICE_URL}/{user_id}")
-            if user_response.status_code == 200:
-                user = user_response.json()
-                order["user"] = user  # Attach user details to order
-            else:
-                order["user"] = {}  # Handle case where user details are not found
+            # Fetch user details from user service (if needed)
+            # Since you want to be independent of user_service, you may skip this or handle gracefully
+            order["user"] = {}  # Assuming no user details needed or available
 
-        return jsonify(orders), 200  # Return orders with attached user details
+        return jsonify(orders), 200  # Return orders with or without user details
     except Exception as e:
         print(f"Exception occurred: {str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500
