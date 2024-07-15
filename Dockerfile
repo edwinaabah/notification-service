@@ -2,10 +2,8 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-COPY notification_service.py .
+COPY order_service.py /app
 
-RUN pip install flask
+RUN pip install Flask requests
 
-EXPOSE 5003
-
-CMD ["python", "notification_service.py"]
+CMD ["python", "order_service.py"]
